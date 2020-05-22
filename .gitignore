@@ -1,3 +1,6 @@
+mysqlCredentials.js
+config.json
+
 # Logs
 logs
 *.log
