@@ -1,5 +1,8 @@
 const router = require('express').Router();
 
+const nodemailer = require('nodemailer');
+const validator = require("email-validator");
+
 const User = require("../models/User.js");
 
 const bcrypt = require('bcrypt');
@@ -19,35 +22,40 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-    const { username, password, passwordRepeat } = req.body;
+    const { username, email, password, passwordRepeat } = req.body;
 
     const isPasswordTheSame = password === passwordRepeat;
 
-    if (username && password && isPasswordTheSame) {
+    if (username && password && isPasswordTheSame && email) {
         // password validation
         if (password.length < 8) {
             return res.status(400).send({ response: "Password must be 8 characters or longer" });
-        } else {
-            try {
-                User.query().select('username').where('username', username).then(foundUser => {
-                    if (foundUser.length > 0) {
-                        return res.status(400).send({ response: "User already exists" });
-                    } else {
-                        bcrypt.hash(password, saltRounds).then(hashedPassword => {
-                            User.query().insert({
-                                username,
-                                password: hashedPassword
-                            }).then(createdUser => {
-                                return res.send({ response: `The user ${createdUser.username} was created` });
-                            });
-                        });
-                    }
-
-                });
-            } catch (error) {
-                return res.status(500).send({ response: "Something went wrong with the DB" });
-            }
+        } else if(!validator.validate(email)){
+            return res.status(400).send({ response: "Email not valid" });
         }
+            else{
+                try {
+                    User.query().select('username').where('username', username).then(foundUser => {
+                        if (foundUser.length > 0) {
+                            return res.status(400).send({ response: "User already exists" });
+                        } else {
+                            bcrypt.hash(password, saltRounds).then(hashedPassword => {
+                                User.query().insert({
+                                    username,
+                                    email,
+                                    password: hashedPassword
+                                }).then(createdUser => {
+
+                                    return res.send({ response: `The user ${createdUser.username} was created` });
+                                });
+                            });
+                        }
+
+                    });
+                } catch (error) {
+                    return res.status(500).send({ response: "Something went wrong with the DB" });
+                }
+            }
     } else if (password && passwordRepeat && !isPasswordTheSame) {
         return res.status(400).send({ response: "Passwords do not match. Fields: password and passwordRepeat" });
     }
