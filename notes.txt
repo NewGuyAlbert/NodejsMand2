@@ -1,0 +1,13 @@
+ORM
+
+DDL - Define
+CREATE, DROP, ALTER
+
+DML - Manipulate
+SELECT, UPDATE, INSERT
+
+Database migrations (happens over time) -> DDL
+Data migrations -> DML (and sometimes database structure, DDL)
+
+
+

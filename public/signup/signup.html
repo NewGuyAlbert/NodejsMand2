@@ -1,0 +1,15 @@
+<script src="/signup/signup.js"></script>
+
+<div>
+    <form action="/signup" method="POST" name="signupform" onsubmit="return validateUser();">
+        
+        <label for="username">Enter Username: </label>
+        <input type="text" id="username" name="username" placeholder="Type in your username.">
+        <label for="password">Enter Password: </label>
+        <input type="password" id="password" name="password" placeholder="Password should be more than 8 characters.">
+        <label for="passwordRepeat">Repeat password: </label>
+        <input type="password" id="passwordRepeat" name="passwordRepeat" placeholder="Repeat password.">
+    
+        <button class="btn btn-primary" type="submit">Sign Up</button>
+    </form>
+</div>
