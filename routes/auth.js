@@ -4,9 +4,35 @@ const nodemailer = require('nodemailer');
 const validator = require("email-validator");
 
 const User = require("../models/User.js");
+const nodemailerCred = require('../config/nodemailercred.js'); //Don't forget to create this file
 
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+
+function sendEmail(email){
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: nodemailerCred.email,
+          pass: nodemailerCred.password
+        }
+      });
+      
+      const mailOptions = {
+        from: nodemailerCred.email,
+        to: email,
+        subject: 'NodejsMandatory2 website account registration',
+        text: "Hello \nPlease click the link bellow to confirm your email(after we actually implement that feature)"
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+}
 
 
 router.post('/login', (req, res) => {
@@ -45,7 +71,7 @@ router.post('/signup', (req, res) => {
                                     email,
                                     password: hashedPassword
                                 }).then(createdUser => {
-
+                                    sendEmail(email);
                                     return res.send({ response: `The user ${createdUser.username} was created` });
                                 });
                             });
