@@ -62,7 +62,7 @@ app.use(usersRoute);
 const fs = require('fs');
 const navbar = fs.readFileSync("./public/navbar.html", "utf8");
 const footer = fs.readFileSync("./public/footer.html", "utf8");
-const index = fs.readFileSync("./public/index.html", "utf8");
+const index = fs.readFileSync("./public/mainpage.html", "utf8");
 const signup = fs.readFileSync("./public/signup/signup.html", "utf8");
 
 app.get("/", (req, res) => {

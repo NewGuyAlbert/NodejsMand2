@@ -1,4 +1,4 @@
-async function validateUser() {
+function validateUser() {
 
 
     console.log("validate user...")
@@ -8,6 +8,10 @@ async function validateUser() {
     const passwordRepeat = document.forms.signupform.passwordRepeat.value;
 
     console.log("user ", username, password, passwordRepeat)
+    if(username == "") {
+        alert("Username should not be empty");
+        return false;
+    }
 
     if (password.length < 8) {
         alert("Password should be more than 8 characters.");
@@ -15,7 +19,7 @@ async function validateUser() {
     }
 
     if (password !== passwordRepeat) {
-        alert("Password is incorrect.");
+        alert("Passwords do not match");
         return false;
     }
 
