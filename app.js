@@ -11,9 +11,15 @@ const session = require('express-session');
 const config = require('./config/config.json');
 
 app.use(session({
+    name: 'sid',
     secret: config.sessionSecret,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 2, // 1000 is one second
+        sameSite: true,
+        secure: false
+    }
 }));
 
 
@@ -28,7 +34,7 @@ app.use(limiter);
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 8 // limit each IP to 8 requests per windowMs
+    max: 40 // limit each IP to 8 requests per windowMs
 });
 
 app.use(express.urlencoded({ extended: false }))
@@ -64,14 +70,42 @@ const navbar = fs.readFileSync("./public/navbar.html", "utf8");
 const footer = fs.readFileSync("./public/footer.html", "utf8");
 const index = fs.readFileSync("./public/mainpage.html", "utf8");
 const signup = fs.readFileSync("./public/signup/signup.html", "utf8");
+const login = fs.readFileSync("./public/login/login.html", "utf8");
+const account = fs.readFileSync("./public/account/account.html","utf8");
+
+//Create redirect for pages that require user to be logged in
+const redirectLogin = (req, res, next) => {
+    if (!req.session.user){
+        res.redirect('/signup');
+    } else {
+        next()
+    }
+}
+
+//Create redirect when user is already logged in
+const redirectAccount = (req, res, next) => {
+    if (req.session.user){
+        res.redirect('/account');
+    } else {
+        next()
+    }
+}
 
 app.get("/", (req, res) => {
     return res.send(navbar + index + footer);
 });
 
-app.get("/signup", (req, res) => {
+app.get("/signup", redirectAccount, (req, res) => {
     return res.send(navbar + signup + footer);
 });
+
+app.get("/login", redirectAccount, (req, res) => {
+    return res.send(navbar + login + footer);
+});
+
+app.get("/account", redirectLogin, (req,res) => {
+    return res.send(navbar + account + footer);
+})
 
 
 const PORT = 3000;

@@ -8,7 +8,7 @@ const nodemailerCred = require('../config/nodemailercred.js'); //Don't forget to
 
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
-
+ 
 function sendEmail(email){
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -72,7 +72,8 @@ router.post('/signup', (req, res) => {
                                     password: hashedPassword
                                 }).then(createdUser => {
                                     sendEmail(email);
-                                    return res.send({ response: `The user ${createdUser.username} was created` });
+                                    req.session.user= username;
+                                    return res.redirect('/account');
                                 });
                             });
                         }
@@ -91,7 +92,8 @@ router.post('/signup', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    return res.status(501).send({ response: "Not implemented yet" });
+    req.session.destroy(function(err) {})
+    return res.redirect('/signup');
 });
 
 module.exports = router;

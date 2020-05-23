@@ -5,7 +5,7 @@ exports.up = function(knex) {
             table.string('username').unique().notNullable();
             table.string('email').notNullable();
             table.string('password').notNullable();
-
+            table.boolean('isEmailConfirmed').notNullable().defaultTo(false);
             table.dateTime('updated_at').defaultTo(knex.raw('NULL ON UPDATE CURRENT_TIMESTAMP'));
             table.timestamp('created_at').defaultTo(knex.fn.now());
         })
