@@ -36,15 +36,38 @@ function sendEmail(email){
 
 
 router.post('/login', (req, res) => {
-    // 1. Get the data from the request
-    // 2. Validate the data 
-    // 3. Check if user exists and get their password
-    // 4. Bcrypt compare
-    // 5. Send a response based on the comparison
+    const { username, password} = req.body;
 
-/*     bcrypt.compare("password", "$2b$12$ivRBaGRMAc5VSV68QVkBsel8Im6xv6ybGZU55QTRNN8W3ufmPG8da")
-    .then(result => console.log(result)); */
-    return res.status(501).send({ response: "Not implemented yet" });
+    if (username && password){
+        try {
+            User.query().select('username').where('username', username).then(async foundUser => {
+                if (foundUser.length == 0) {
+                    return res.redirect("/login?error"); //User not found
+                } else{
+                    const matchingPassword = await User.query().select('password').where({ 'username': username });
+                    const passwordToValidate = matchingPassword[0].password;
+                    
+                    bcrypt.compare(password, passwordToValidate).then((result) => {
+                        if(result){
+                            req.session.user = username;
+                            return res.redirect("/account");
+
+                        } else{
+                            return res.redirect("/login?error"); //Wrong password
+                        }
+                        
+                    });
+
+                }
+            });
+        }
+        catch (error) {
+            return res.redirect("/login?error"); //Something wrong with the DB
+        }
+    }
+    else {
+        return res.redirect("/login?error"); //Missing fields
+    }
 });
 
 router.post('/signup', (req, res) => {
