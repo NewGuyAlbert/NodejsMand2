@@ -21,11 +21,16 @@
     <title>SecretMessage</title>
 </head>
 <body>
+    
     <nav class="navbar sticky-top navbar-dark bg-dark">
         <a class="navbar-brand" href="/account">Secret Message</a>
         <form class="form-inline">
-            <a class="btn btn-secondary" href="/signup">Sign Up</a>
-            <a class="btn btn-light" href="/login">Login</a>
-            <a class="btn btn-light" href="/logout">Logout</a>
+            <a class="btn btn-secondary" href="/signup" id="signupButton">Sign Up</a>
+            <a class="btn btn-light" href="/login" id="loginButton">Login</a>
+            <a class="btn btn-light" href="/account" id="loggedInUser"><%=sessionUser%></a>
+            <a class="btn btn-light" href="/logout" id="logoutButton">Logout</a>
         </form>
     </nav>
+
+    <script src="/navbar.js"></script>
+

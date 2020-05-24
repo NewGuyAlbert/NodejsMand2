@@ -6,6 +6,9 @@ app.use(express.static("public"));
 
 const session = require('express-session');
 
+// Set EJS as templating engine 
+app.set('view engine', 'ejs');
+const ejs = require('ejs');
 
 // You need to copy the config.template.json file and fill out your own secret
 const config = require('./config/config.json');
@@ -92,19 +95,19 @@ const redirectAccount = (req, res, next) => {
 }
 
 app.get("/", (req, res) => {
-    return res.send(navbar + index + footer);
+    return res.send(ejs.render(navbar,{sessionUser: req.session.user}) + index + footer);
 });
 
 app.get("/signup", redirectAccount, (req, res) => {
-    return res.send(navbar + signup + footer);
+    return res.send(ejs.render(navbar,{sessionUser: req.session.user}) + signup + footer);
 });
 
 app.get("/login", redirectAccount, (req, res) => {
-    return res.send(navbar + login + footer);
+    return res.send(ejs.render(navbar,{sessionUser: req.session.user}) + login + footer);
 });
 
 app.get("/account", redirectLogin, (req,res) => {
-    return res.send(navbar + account + footer);
+    return res.send(ejs.render(navbar,{sessionUser: req.session.user}) + account + footer);
 })
 
 
